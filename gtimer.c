@@ -7,7 +7,10 @@
 #define TIMER_PAUSED	2	// Таймер на паузе
 
 
-static volatile u64 SysTime;				// системное время
+ 
+volatile u08 SysTick = 0;		// Инициализация флага SysTick
+
+static volatile u64 SysTime;	// системное время
 
 static volatile u08 GTStates[MAX_GTIMERS];	// текущие состояния каждого таймера (все
 											// инициализируются как TIMER_STOPPED)
@@ -49,7 +52,7 @@ void GTimer_Init() {
 //	Purpose :		Обработчик системного времени
 //-----------------------------------------
 
-void SysTime_Handler(void) {
+void SysTime_Handler() {
 	SysTick = 0;			// опускаем флаг систика
 
 	DISABLE_INTERRUPT();

@@ -22,19 +22,19 @@
 /******************************************************************************************
  * Инициализация флага SysTick */
  
-volatile u08 SysTick = 0;
+extern volatile u08 SysTick = 0;
 
 
 /******************************************************************************************
  * Объявления функций */
 
-void GTimer_Init(void);
-void SysTime_Handler(void);
-void GTimer_Start(void); 
-void GTimer_Stop(void);
-void GTimer_Pause(void);
-void GTimer_Release(void);
-void GTimer_Exp(void);
-void GTimer_Get_Remainder(void);
+void GTimer_Init();
+void SysTime_Handler();
+void GTimer_Start(u08 GTimerID,u64 delay); 
+void GTimer_Stop(u08 GTimerID);
+u08 GTimer_Exp(u08 GTimerID);
+void GTimer_Pause(u08 GTimerID);
+void GTimer_Release(u08 GTimerID);
+u64 GTimer_Get_Remainder(u08 GTimerID);
 
 #endif	// GTIMER_H_

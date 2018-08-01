@@ -29,7 +29,7 @@ void LEDs_Init() {
 
 void SysLED_Blink() {
 
-static volatile u08 state = 0;
+static u08 state = 0;
 
 	switch(state) 	{
 	

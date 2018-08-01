@@ -3,7 +3,8 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdint.h>
+#include <stdio.h>
+#include <limits.h>
 
 
 /******************************************************************************************
@@ -16,15 +17,33 @@
 
 /******************************************************************************************
  * Переопределения типов */
-typedef uint8_t		u08;
-typedef uint16_t	u16;
-typedef uint32_t	u32;
-typedef uint64_t	u64;
+typedef	uint8_t		u08;
+typedef	uint16_t	u16;
+typedef	uint32_t	u32;
+typedef	uint64_t	u64;
 
-typedef   int8_t	s08;
-typedef   int16_t	s16;
-typedef   int32_t	s32;
-typedef   int64_t	s64;
+typedef	int8_t		s08;
+typedef	int16_t		s16;
+typedef	int32_t		s32;
+typedef	int64_t		s64;
+
+/******************************************************************************************
+ * Максимальные значения типов */
+ 
+#define u08MAX	UCHAR_MAX
+#define u16MAX	USHRT_MAX
+#define u32MAX	UINT_MAX
+#define u64MAX	ULONG_MAX
+
+#define s08MIN	SCHAR_MIN
+#define s08MAX	SCHAR_MAX
+#define s16MIN	SHRT_MIN
+#define s16MAX	SHRT_MAX
+#define s32MIN	INT_MIN
+#define s32MAX	INT_MAX
+#define s64MIN	LONG_MIN
+#define s64MAX	LONG_MAX
+
 
 /******************************************************************************************
  * Макросы прерываний */
@@ -64,23 +83,6 @@ static volatile u08 saveRegister;
 #define YES		1
 #define NO		0
 
-
-/******************************************************************************************
- * Максимальные значения типов */
- 
-#define u08MAX	 255
-#define u16MAX	 65535
-#define u32MAX	 4294967295
-#define u64MAX	 18446744073709551615
-
-#define s08MIN	-128
-#define s08MAX	 127
-#define s16MIN	-32768
-#define s16MAX	 32767
-#define s32MIN	-2147483648
-#define s32MAX	 2147483647
-#define s64MIN	-9223372036854775808
-#define s64MAX	 9223372036854775807
 
 /*--------------------------------------------------------------------------*/
 #endif /* COMMONS_H_ */

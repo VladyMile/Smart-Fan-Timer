@@ -39,12 +39,17 @@
 #define KEY_SELECTOR	3
 
 
+extern u08 volatile pressedKey = 0;
+
+extern u08 comp = 0;
+
+
 /******************************************************************************************
  * Объявления функций */
 
 void BUTTONS_Init(void);
 void BUTTONS_Debrief(void);
-void BUTTONS_GetKey(void);
-void BUTTONS_SetKey(void);
+u08 BUTTONS_GetKey(void);
+void BUTTONS_SetKey(u08 key);
 
 #endif //BUTTONS_H_

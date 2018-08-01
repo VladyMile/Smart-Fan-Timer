@@ -23,8 +23,8 @@
 /******************************************************************************************
  * Объявления функций */
 
-void LEDs_Init(void);
-void SysLED_Blink(void);
+void LEDs_Init();
+void SysLED_Blink();
 
 
 #endif // LEDS_H_
