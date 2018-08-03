@@ -3,7 +3,7 @@
 
 
 u08 volatile pressedKey = 0;
-u08 comp = 0;
+
 
 
 /**************************************************************************
@@ -35,6 +35,7 @@ void BUTTONS_Debrief(void) {
 
 GTimer_Start(timer_buttons,BUTTON_POLLING_PERIOD); // запускаем таймер
 
+static u08 comp = 0;
 
 u08 key = 0;
 
@@ -65,8 +66,6 @@ u08 key = 0;
 *   Parameters :    нет
 *   Purpose :       возвращает содержимое кнопочного буфера
 *                   при этом буфер очищается
-*                   вызывается в главном цикле
-*
 ****************************************************************************/
 u08 BUTTONS_GetKey(void) {
 		u08 key = pressedKey;
