@@ -3,74 +3,76 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
-#include <limits.h>
+#include <stdint.h>
+#include <avr/wdt.h>
+#include <avr/cpufunc.h>
 
 
 /******************************************************************************************
- * Битовые макросы */
-#define SetBit(reg, bit)		do { reg |= (1<<bit); } while(0)
-#define ClearBit(reg, bit)		do { reg &= (~(1<<bit)); } while(0)
-#define SwitchBit(reg, bit)		do { reg ^= (1<<bit); } while(0)
-#define BitIsSet(reg, bit)		do { ((reg & (1<<bit)) != 0); } while(0)
-#define BitIsClear(reg, bit)	do { ((reg & (1<<bit)) == 0); } while(0)
+* Битовые макросы */
+#define SetBit(reg, bit)		(reg |= (1<<bit))
+#define ClearBit(reg, bit)		(reg &= (~(1<<bit)))
+#define SwitchBit(reg, bit)		(reg ^= (1<<bit))
+#define BitIsSet(reg, bit)		((reg & (1<<bit)) != 0)
+#define BitIsClear(reg, bit)	((reg & (1<<bit)) == 0)
 
 /******************************************************************************************
- * Переопределения типов */
-typedef	uint8_t		u08;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
+* Переопределения типов */
+typedef uint8_t		u08;
+typedef uint16_t	u16;
+typedef uint32_t	u32;
+typedef uint64_t	u64;
 
-typedef	int8_t		s08;
-typedef	int16_t		s16;
-typedef	int32_t		s32;
-typedef	int64_t		s64;
-
-/******************************************************************************************
- * Максимальные значения типов */
- 
-#define u08MAX	UCHAR_MAX
-#define u16MAX	USHRT_MAX
-#define u32MAX	UINT_MAX
-#define u64MAX	ULONG_MAX
-
-#define s08MIN	SCHAR_MIN
-#define s08MAX	SCHAR_MAX
-#define s16MIN	SHRT_MIN
-#define s16MAX	SHRT_MAX
-#define s32MIN	INT_MIN
-#define s32MAX	INT_MAX
-#define s64MIN	LONG_MIN
-#define s64MAX	LONG_MAX
-
+typedef int8_t		s08;
+typedef int16_t		s16;
+typedef int32_t		s32;
+typedef int64_t		s64;
 
 /******************************************************************************************
- * Макросы прерываний */
- 
+* Максимальные значения типов */
+
+#define u08MAX	UINT8_MAX
+#define u16MAX	UINT16_MAX
+#define u32MAX	UINT32_MAX
+#define u64MAX	UINT64_MAX
+
+#define s08MIN	INT8_MIN
+#define s08MAX	INT8_MAX
+#define s16MIN	INT16_MIN
+#define s16MAX	INT16_MAX
+#define s32MIN	INT32_MIN
+#define s32MAX	INT32_MAX
+#define s64MIN	INT64_MIN
+#define s64MAX	INT64_MAX
+
+/******************************************************************************************
+* Макросы прерываний */
+
 static volatile u08 saveRegister;
 
-#define ENABLE_INTERRUPT()	do { asm volatile ("sei"); } while(0)
-#define DISABLE_INTERRUPT()	do { saveRegister = SREG; asm volatile ("cli"); } while(0)
-#define RESTORE_INTERRUPT()	do { SREG = saveRegister; asm volatile ("sei"); } while(0) //использовать RESTORE только после DISABLE
+#define ENABLE_INTERRUPT()	sei()
+#define DISABLE_INTERRUPT()	(do { saveRegister = SREG; cli(); } while(0))
+#define RESTORE_INTERRUPT()	(do { SREG = saveRegister; sei(); } while(0))	//использовать
+																			//RESTORE только
+																			//после DISABLE
 
-#define WATCHDOG_RESET()	do { asm volatile ("wdr"); } while(0)
-	
+#define WATCHDOG_RESET()		wdt_reset()
+   
 /******************************************************************************************
- * Барьер памяти */
+* Барьер памяти */
 
- // http://we.easyelectronics.ru/blog/Soft/2593.html
- 
-#define MEMORY_BARRIER() 	do { asm volatile ("" ::: "memory"); } while(0)
+// http://we.easyelectronics.ru/blog/Soft/2593.html
 
-/******************************************************************************************
- * Такт бездействия */
-
-#define nop()				do { asm volatile (nop); } while(0)
+#define MEMORY_BARRIER()	_MemoryBarrier();
 
 /******************************************************************************************
- * Логические значения */
- 
+* Такт бездействия */
+
+#define nop()				_NOP();
+
+/******************************************************************************************
+* Логические значения */
+
 #define TRUE	1
 #define FALSE	0
 
