@@ -98,10 +98,10 @@ extern volatile u08 ADC_Latch;			// защёлка обновления знач
 /******************************************************************************************
  * Объявления функций */
 
-void ADC_Init(void);
-void ADC_Average_Filter_Init(void);
+void ADC_Init();
+void ADC_Average_Filter_Init();
 void ADC_Average_Filter_Update(u08 ch);
 u08 ADC_Average_Filter_Result(u08 ch);
-void ADC_Controller(void);
+void ADC_Controller();
 
 #endif /* ADC_H_ */

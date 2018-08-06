@@ -45,9 +45,9 @@ extern static u08 pressedKey = 0;
 /******************************************************************************************
  * Объявления функций */
 
-void BUTTONS_Init(void);
-void BUTTONS_Debrief(void);
-u08 BUTTONS_GetKey(void);
+void BUTTONS_Init();
+void BUTTONS_Debrief();
+u08 BUTTONS_GetKey();
 void BUTTONS_SetKey(u08 key);
 
 #endif //BUTTONS_H_
