@@ -2,7 +2,7 @@
 #include "commons.h"
 
 
-u08 volatile pressedKey = 0;
+static u08 pressedKey = 0;
 
 
 
