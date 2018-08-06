@@ -12,14 +12,14 @@ static u08 pressedKey = 0;
 *   Parameters :    нет
 *   Purpose :       инициализация кнопочных портов как входов
 ****************************************************************************/
-void BUTTONS_Init(void) {
-	ClearBit(BUTTONS_DDR,PIN_RUN);		// порты кнопок как входы
-	ClearBit(BUTTONS_DDR,PIN_STOP);		// порты кнопок как входы
-	ClearBit(BUTTONS_DDR,PIN_SELECTOR);	// порты кнопок как входы
+void BUTTONS_Init() {
+	CLEAR_BIT(BUTTONS_DDR,PIN_RUN);		// порты кнопок как входы
+	CLEAR_BIT(BUTTONS_DDR,PIN_STOP);		// порты кнопок как входы
+	CLEAR_BIT(BUTTONS_DDR,PIN_SELECTOR);	// порты кнопок как входы
 	
-	SetBit(BUTTONS_PORT,PIN_RUN);		// ВКЛ внутреннюю подтяжку
-	SetBit(BUTTONS_PORT,PIN_STOP);		// ВКЛ внутреннюю подтяжку
-	SetBit(BUTTONS_PORT,PIN_SELECTOR);	// ВКЛ внутреннюю подтяжку
+	SET_BIT(BUTTONS_PORT,PIN_RUN);		// ВКЛ внутреннюю подтяжку
+	SET_BIT(BUTTONS_PORT,PIN_STOP);		// ВКЛ внутреннюю подтяжку
+	SET_BIT(BUTTONS_PORT,PIN_SELECTOR);	// ВКЛ внутреннюю подтяжку
 }
 
 
@@ -31,18 +31,18 @@ void BUTTONS_Init(void) {
 *					нескольких последовательных опросов,
 *                   ее номер записывается в буфер
 ****************************************************************************/
-void BUTTONS_Debrief(void) {
+void BUTTONS_Debrief() {
 
-GTimer_Start(timer_buttons,BUTTON_POLLING_PERIOD); // запускаем таймер
+GTimer_Start(u08 GTIMER_BUTTONS,u08 BUTTON_POLLING_PERIOD); // запускаем таймер
 
 static u08 comp = 0;
 
 u08 key = 0;
 
 	// последовательный опрос кнопок (выводов МК)
-	if (BitIsClear(BUTTONS_PIN, PIN_RUN)) key = KEY_RUN;
-	else	if (BitIsClear(BUTTONS_PIN, PIN_STOP)) key = KEY_STOP;
-			else	if (BitIsClear(BUTTONS_PIN, PIN_SELECTOR)) key = KEY_SELECTOR;
+	if (BIT_IS_CLEAR(BUTTONS_PIN, PIN_RUN)) key = KEY_RUN;
+	else	if (BIT_IS_CLEAR(BUTTONS_PIN, PIN_STOP)) key = KEY_STOP;
+			else	if (BIT_IS_CLEAR(BUTTONS_PIN, PIN_SELECTOR)) key = KEY_SELECTOR;
 					else key = KEY_NULL;
 
 	// если во временной переменной что-то есть
@@ -67,7 +67,7 @@ u08 key = 0;
 *   Purpose :       возвращает содержимое кнопочного буфера
 *                   при этом буфер очищается
 ****************************************************************************/
-u08 BUTTONS_GetKey(void) {
+u08 BUTTONS_GetKey() {
 		u08 key = pressedKey;
 		pressedKey = KEY_NULL;
 		return key;

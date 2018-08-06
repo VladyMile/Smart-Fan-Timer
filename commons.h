@@ -10,11 +10,11 @@
 
 /******************************************************************************************
 * Битовые макросы */
-#define SetBit(reg, bit)		(reg |= (1<<bit))
-#define ClearBit(reg, bit)		(reg &= (~(1<<bit)))
-#define SwitchBit(reg, bit)		(reg ^= (1<<bit))
-#define BitIsSet(reg, bit)		((reg & (1<<bit)) != 0)
-#define BitIsClear(reg, bit)	((reg & (1<<bit)) == 0)
+#define SET_BIT(reg, bit)		(reg |= (1<<bit))
+#define CLEAR_BIT(reg, bit)		(reg &= (~(1<<bit)))
+#define SWITCH_BIT(reg, bit)	(reg ^= (1<<bit))
+#define BIT_IS_SET(reg, bit)	((reg & (1<<bit)) != 0)
+#define BIT_IS_CLEAR(reg, bit)	((reg & (1<<bit)) == 0)
 
 /******************************************************************************************
 * Переопределения типов */
@@ -48,15 +48,15 @@ typedef int64_t		s64;
 /******************************************************************************************
 * Макросы прерываний */
 
-static volatile u08 saveRegister;
+static volatile u08 SaveRegister;
 
 #define ENABLE_INTERRUPT()	sei()
-#define DISABLE_INTERRUPT()	(do { saveRegister = SREG; cli(); } while(0))
-#define RESTORE_INTERRUPT()	(do { SREG = saveRegister; sei(); } while(0))	//использовать
+#define DISABLE_INTERRUPT()	(do { SaveRegister = SREG; cli(); } while(0))
+#define RESTORE_INTERRUPT()	(do { SREG = SaveRegister; sei(); } while(0))	//использовать
 																			//RESTORE только
 																			//после DISABLE
 
-#define WATCHDOG_RESET()		wdt_reset()
+#define WATCHDOG_RESET()	wdt_reset()		// пинок собаке
    
 /******************************************************************************************
 * Барьер памяти */
@@ -68,7 +68,7 @@ static volatile u08 saveRegister;
 /******************************************************************************************
 * Такт бездействия */
 
-#define nop()				_NOP();
+#define NOP()				_NOP();	// единица измерения - 1 лень
 
 /******************************************************************************************
 * Логические значения */

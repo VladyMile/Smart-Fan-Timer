@@ -112,22 +112,22 @@ Comments:
 //	Purpose :		TIM2 - системные часы
 //-----------------------------------------
 
-void TIMER2_systime_Init(void) {
+void TIMER2_SysTime_Init() {
 	
 	DISABLE_INTERRUPT();
 
 	//ставим режим работы - прерывание по переполнению
-	ClearBit(TIMSK2, OCIE2A);
-	ClearBit(TIMSK2, OCIE2B);
-	SetBit(TIMSK2, TOIE2);
+	CLEAR_BIT(TIMSK2, OCIE2A);
+	CLEAR_BIT(TIMSK2, OCIE2B);
+	SET_BIT(TIMSK2, TOIE2);
 	
 	//ставим предделитель таймера "1024"
-	ClearBit(TCCR2B, FOC2A);
-	ClearBit(TCCR2B, FOC2B);
-	ClearBit(TCCR2B, WGM22);
-	SetBit(TCCR2B, CS22);
-	SetBit(TCCR2B, CS21);
-	SetBit(TCCR2B, CS20);
+	CLEAR_BIT(TCCR2B, FOC2A);
+	CLEAR_BIT(TCCR2B, FOC2B);
+	CLEAR_BIT(TCCR2B, WGM22);
+	SET_BIT(TCCR2B, CS22);
+	SET_BIT(TCCR2B, CS21);
+	SET_BIT(TCCR2B, CS20);
 	return;
 }
 
@@ -156,7 +156,7 @@ int main (void) {
 
 // конфигурируем системные часы
 
-	TIMER2_systime_Init();
+	TIMER2_SysTime_Init();
 
 // конфигурируем порты
 
@@ -179,11 +179,11 @@ int main (void) {
 // ГЛАВНЫЙ ЦИКЛ
 	for(;;)	{
 
-		if (GTimer_Exp(timer_led_sys)) {	// проверка истечения таймера SysLED
+		if (GTimer_Exp(GTIMER_SYS_LED)) {	// проверка истечения таймера SysLED
 			SysLED_Blink(); 				// и вход в автомат мигания SysLED
 		}
 		
-		if (GTimer_Exp(timer_buttons)) {	// проверка истечения таймера опроса кнопок
+		if (GTimer_Exp(GTIMER_BUTTONS)) {	// проверка истечения таймера опроса кнопок
 			BUTTONS_Debrief();				// опрашиваем кнопки
 		}
 		

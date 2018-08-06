@@ -12,20 +12,20 @@ volatile u08 SysTick = 0;		// Инициализация флага SysTick
 
 static volatile u64 SysTime;	// системное время
 
-static volatile u08 GTStates[MAX_GTIMERS];	// текущие состояния каждого таймера (все
-											// инициализируются как TIMER_STOPPED)
+static volatile u08 GTStates[GTIMER_MAX_IDs];	// текущие состояния каждого таймера (все
+												// инициализируются как TIMER_STOPPED)
 
-static volatile u64 GTDelay[MAX_GTIMERS];	// массив задержек для каждого таймера
-											// GTDelay[GTimerID] = SysTime + delay;
-											// все инициализируются как "истёкшие"
+static volatile u64 GTDelay[GTIMER_MAX_IDs];	// массив задержек для каждого таймера
+												// GTDelay[GTimerID] = SysTime + delay;
+												// все инициализируются как "истёкшие"
 
 
 
 //-----------------------------------------
 //	Function name :	GTimer_Init()
 //	Returns :		нет
-//	Parameters :	u08 MAX_GTIMERS - Количество используемых таймеров (максимум 255)
-//					(определяется в maintimer.h)
+//	Parameters :	GTIMER_MAX_IDs - Количество используемых таймеров (максимум 255)
+//					(определяется в gtimer.h)
 //	Purpose :		Нулевая инициализация всех рабочих таймеров
 //-----------------------------------------
 
@@ -33,14 +33,14 @@ void GTimer_Init() {
 
 	SysTime = 0;						// обнуляем системное время
 
-//	for(u08 i=0; i<MAX_GTIMERS; i++) {	// стартуем все (определённые в GTimerID)
+//	for(u08 i=0; i<GTIMER_MAX_IDs; i++) {	// стартуем все (определённые в GTimerID)
 //		Start_GTimer(i, 0);				// таймеры с временем 0 (ноль) систик
 //	}
 //
 
 // сделаем иначе, проще и быстрее
-	GTStates[MAX_GTIMERS] = {0};		// "STOP"-арим все таймеры
-	GTDelay[MAX_GTIMERS] = {0};			// обнуляем все задержки
+	GTStates[GTIMER_MAX_IDs] = {0};		// стопарим все таймеры и
+	GTDelay[GTIMER_MAX_IDs] = {0};		// обнуляем все задержки
 }
 
 
@@ -61,7 +61,7 @@ void SysTime_Handler() {
 		
 	// если устройство не RUN (не в работе), а системное время SysTime превысило
 	// половину размера своей переменной,
-	if ((GTStates[timer_run] == TIMER_STOPPED) && ((u64MAX/2) < SysTime)) {
+	if ((GTStates[GTIMER_RUN] == TIMER_STOPPED) && ((u64MAX/2) < SysTime)) {
 		DISABLE_INTERRUPT();
 		GTimer_Init();		// то обнуляем системное время и
 							// реинициализируем все рабочие таймеры
@@ -81,7 +81,7 @@ void SysTime_Handler() {
 void GTimer_Start(u08 GTimerID,u64 delay) {
 	GTStates[GTimerID] = TIMER_RUNNING;
 	DISABLE_INTERRUPT();
-		GTDelay[GTimerID] = ((delay/SYS_TICK_PERIOD) + SysTime);
+		GTDelay[GTimerID] = (delay/SYS_TICK_PERIOD) + SysTime;
 	RESTORE_INTERRUPT();
 }
 
@@ -110,11 +110,12 @@ u08 GTimer_Exp(u08 GTimerID) {
 	if (GTStates[GTimerID] == TIMER_STOPPED) {
 		return YES;
 	}
-	else if (GTStates[GTimerID] == TIMER_RUNNING) {
-				if(SysTime >= GTDelay[GTimerID]) {
-					GTStates[GTimerID] = TIMER_STOPPED;
-					return YES;
-				}
+	else	if (SysTime < GTDelay[GTimerID]) {
+				return NO;
+			}
+			else {
+				GTStates[GTimerID] = TIMER_STOPPED;
+				return YES;
 			}
 	return NO;
 }
@@ -158,7 +159,5 @@ void GTimer_Release(u08 GTimerID)  {
 //-----------------------------------------
 
 u64 GTimer_Get_Remainder(u08 GTimerID)	{
-	
 	return (GTDelay[GTimerID] > SysTime ? (GTDelay[GTimerID] - SysTime) : 0);
-
 }

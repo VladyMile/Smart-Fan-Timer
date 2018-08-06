@@ -2,16 +2,16 @@
 #include "adc.h" 
    
 
-const u08 ADC_Port[ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
+const u08 ADC_Port[u08 ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
 
-static u08 ADC_State = LapTime;		// состояние и вход АЦП
+volatile u08 ADC_State = u08 LapTime;		// состояние и вход АЦП
 
-volatile u08 ADC_Value[ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по каждому
+volatile u08 ADC_Value[u08 ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по каждому
 									// входу отдельно; у нас пока только один вход "Время"/LapTime;
 									// при инициализации LapTime ставится в максимум
 
-static u16 y[ADC_INPUTS];		// вспомогательный массив, хранящий "коэффициенты
-								// усреднения" для ADC_Average_Filter_...
+static u16 K_ancillary[u08 ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
+										// усреднения" для ADC_Average_Filter_...
 
 volatile u08 ADC_Latch = 0;		// защёлка обновления значений АЦП - разрешает
 								// перемены единожды после преобразования.
@@ -28,23 +28,23 @@ volatile u08 ADC_Latch = 0;		// защёлка обновления значен
 *   Purpose :       Инициализация АЦП
 ****************************************************************************/
 
-void ADC_Init(void) {
+void ADC_Init() {
 	
-	SetBit(ADCSRA, ADEN);		//включаем АЦП
-	ClearBit(ADCSRA, ADSC);		//старт преобразования пока не включаем
-	ClearBit(ADCSRA, ADATE);	//отключаем постоянное преобразование
-	SetBit(ADCSRA, ADIF);		//снимаем флаг прерывания
-	SetBit(ADCSRA, ADIE);		//разрешаем прерывания
+	SET_BIT(ADCSRA, ADEN);		//включаем АЦП
+	CLEAR_BIT(ADCSRA, ADSC);		//старт преобразования пока не включаем
+	CLEAR_BIT(ADCSRA, ADATE);	//отключаем постоянное преобразование
+	SET_BIT(ADCSRA, ADIF);		//снимаем флаг прерывания
+	SET_BIT(ADCSRA, ADIE);		//разрешаем прерывания
 
 	//делитель частоты "на 32" для тактирования АЦП на (F_CPU/32) 250кГц
-	SetBit(ADCSRA, ADPS2);
-	ClearBit(ADCSRA, ADPS1);
-	SetBit(ADCSRA, ADPS0);
+	SET_BIT(ADCSRA, ADPS2);
+	CLEAR_BIT(ADCSRA, ADPS1);
+	SET_BIT(ADCSRA, ADPS0);
 
-	ClearBit(ADMUX, REFS1);		//Источник Опорного Напряжения выставляем как
-	SetBit(ADMUX, REFS0);		//"AVcc с внешним конденсатором на ножке AREF"
+	CLEAR_BIT(ADMUX, REFS1);		//Источник Опорного Напряжения выставляем как
+	SET_BIT(ADMUX, REFS0);		//"AVcc с внешним конденсатором на ножке AREF"
 
-	SetBit(ADMUX, ADLAR);		//выравниваем результат преобразования по левому краю
+	SET_BIT(ADMUX, ADLAR);		//выравниваем результат преобразования по левому краю
 	
 	ADCSRB = 0;					//мы мудрые - мы чистим этот регистр на всякий случай
 	
@@ -72,9 +72,9 @@ void ADC_Init(void) {
 // среднее по 2^N, только не требует много памяти
 // http://chipenable.ru/index.php/programming-avr/162-prostoy-cifrovoy-filtr.html
 
-void ADC_Average_Filter_Init(void) {
+void ADC_Average_Filter_Init() {
 
-	y[LapTime] = u08MAX << ADC_K_EXPONENT;
+	K_ancillary[u08 LapTime] = u08MAX << (u08 ADC_K_EXPONENT);
 
 }
 
@@ -94,9 +94,9 @@ void ADC_Average_Filter_Init(void) {
 
 void ADC_Average_Filter_Update(u08 ch) {
 
-//	y[ch] += ADC_Value[ADC_STATE] - (y[ch] >> ADC_K_EXPONENT);	// нечитабельно, лучше развернуть
+//	K_ancillary[ch] += ADC_Value[ADC_STATE] - (K_ancillary[ch] >> ADC_K_EXPONENT);	// нечитабельно, лучше развернуть
 
-	y[ch] = y[ch] + ADC_Value[ADC_State] - (y[ch] >> ADC_K_EXPONENT);
+	K_ancillary[ch] = K_ancillary[ch] + ADC_Value[ADC_State] - (K_ancillary[ch] >> (u08 ADC_K_EXPONENT));
 
 }
 
@@ -115,7 +115,7 @@ void ADC_Average_Filter_Update(u08 ch) {
 
 u08 ADC_Average_Filter_Result(u08 ch) {
 
-	return y[ch] >> ADC_K_EXPONENT;
+	return K_ancillary[ch] >> (u08 ADC_K_EXPONENT);
 
 }
 
@@ -130,7 +130,7 @@ u08 ADC_Average_Filter_Result(u08 ch) {
 *					переключением состояния АЦП на другой вход (в перспективе)
 ****************************************************************************/
 
-void ADC_Controller(void) {
+void ADC_Controller() {
 
 // если прерывание АЦП только что случилось и ещё не обработано
 	if (ADC_Latch) {
@@ -158,9 +158,9 @@ void ADC_Controller(void) {
 
 // если прерывание АЦП было обработано ранее и
 // если таймер периода опроса АЦП истёк
-	else if (GTimer_Exp(timer_adc)) {
+	else if (GTimer_Exp(GTIMER_ADC)) {
 
-		GTimer_Start(timer_adc,ADC_POLLING_PERIOD);	// рестартуем таймер АЦП
+		GTimer_Start(u08 GTIMER_ADC,u08 ADC_POLLING_PERIOD);	// рестартуем таймер АЦП
 
 		switch (ADC_State)	{
 			case LapTime:	{

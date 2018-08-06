@@ -33,14 +33,15 @@ ADC_State... и так далее до тошноты.
 #define ADC_INPUTS  1	// количество используемых входов АЦП; их следует описать по пинам МК в
 						// ADC_Port[] и по ID входов АЦП ADC_State
 	
-extern const u08 ADC_Port[ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
+extern const u08 ADC_Port[u08 ADC_INPUTS];	// порты входов АЦП (движок потенциометра "Время" на ADC7)
  
-/* ID входов АЦП ADC_State */
+/****************************************************************************************************
+ * ID входов АЦП (ADC_State) */
 // должны идти без пропусков от 0 до 8
 #define LapTime		0	// опрос движка потенциометра "Время" (установка времени RUN)
 
 
-extern static u08 ADC_State = LapTime;		// дефолтное состояние и вход АЦП
+extern volatile u08 ADC_State;			// дефолтное состояние и вход АЦП
 
 
 #define ADC_POLLING_PERIOD			40	// в миллисекундах период опроса входа АЦП; использовать
@@ -53,43 +54,45 @@ extern static u08 ADC_State = LapTime;		// дефолтное состояние
 #define ADC_K_OF_LPF	(ADC_SAMPLING_FREQUENCY*ADC_TIME_CONSTANT_OF_LPF) // коэффициент  БИХ-фильтра
 
 
-#if ADC_K_OF_LPF < 3 
+#if (u08)ADC_K_OF_LPF < 3 
 	#define ADC_K_EXPONENT  1	// приблизительный показатель степени по основанию 2 коэффициента
-#elif ADC_K_OF_LPF < 5			// "К"  БИХ-ФНЧ для того, чтобы деление заменить сдвигом
+#elif (u08)ADC_K_OF_LPF < 5		// "К"  БИХ-ФНЧ для того, чтобы деление заменить сдвигом
 	#define ADC_K_EXPONENT  2
-#elif ADC_K_OF_LPF < 9
+#elif (u08)ADC_K_OF_LPF < 9
 	#define ADC_K_EXPONENT  3
-#elif ADC_K_OF_LPF < 17
+#elif (u08)ADC_K_OF_LPF < 17
 	#define ADC_K_EXPONENT  4
-#elif ADC_K_OF_LPF < 33
+#elif (u08)ADC_K_OF_LPF < 33
 	#define ADC_K_EXPONENT  5
-#elif ADC_K_OF_LPF < 65
+#elif (u08)ADC_K_OF_LPF < 65
 	#define ADC_K_EXPONENT  6
-#elif ADC_K_OF_LPF < 129
+#elif (u08)ADC_K_OF_LPF < 129
 	#define ADC_K_EXPONENT  7
 #else
 	#define ADC_K_EXPONENT  8
 #endif
 
 
-extern volatile u08 ADC_Value[ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по
+extern volatile u08 ADC_Value[u08 ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по
 											// каждому входу отдельно; у нас пока только один
 											// вход "Время"/LapTime; при инициализации LapTime
 											// ставим в максимум
 
-extern static u16 y[ADC_INPUTS];		// вспомогательный массив, хранящий "коэффициенты
-										// усреднения" для ADC_Average_Filter_...
+extern static u16 ancillary[u08 ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
+												// усреднения" для ADC_Average_Filter_...
 
-extern volatile u08 ADC_Latch = 0;		// защёлка обновления значений АЦП - разрешает
+extern volatile u08 ADC_Latch;			// защёлка обновления значений АЦП - разрешает
 										// перемены единожды после преобразования.
 										// устанавливается ("1") в прерывании АЦП,
 										// сбрасывается ("0") после окончания обработки
 										// оцифрованного значения
 
 
-#define ADC_Start()		SetBit(ADCSRA, ADSC)	// старт преобразования АЦП
+// старт преобразования АЦП
+#define ADC_START()		SET_BIT(ADCSRA, ADSC)
 
-#define ADC_SetInput(_input) do { ADMUX &= 0xF0; ADMUX |= ((_input) & 0x0F); } while(0)	//выбор входа АЦП
+//выбор входа АЦП
+#define ADC_SET_INPUT(_input)	(do { ADMUX &= 0xF0; ADMUX |= ((_input) & 0x0F); } while(0))
 
 									
 /******************************************************************************************

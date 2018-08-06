@@ -35,13 +35,13 @@ static u08 state = 0;
 	
 		case 0:
 			SysLED_On();			// ВКЛючаем SysLED
-			GTimer_Start(timer_led_sys,SysLED_duration_ON);		// запускаем таймер
+			GTimer_Start(GTIMER_SYS_LED,SYS_LED_DURATION_ON);	// запускаем таймер
 			state = 1;				// меняем состояние свича
 			return;
 
 		case 1:
 			SysLED_Off();			// ВЫКЛючаем SysLED
-			GTimer_Start(timer_led_sys,SysLED_duration_OFF);	// запускаем таймер
+			GTimer_Start(GTIMER_SYS_LED,SYS_LED_DURATION_OFF);	// запускаем таймер
 			state = 0;				// меняем состояние свича
 			return;
 	}
