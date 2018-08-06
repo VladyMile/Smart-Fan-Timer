@@ -39,8 +39,8 @@ void GTimer_Init() {
 //
 
 // сделаем иначе, проще и быстрее
-	GTStates[GTIMER_MAX_IDs] = {0};		// стопарим все таймеры и
-	GTDelay[GTIMER_MAX_IDs] = {0};		// обнуляем все задержки
+	GTStates[GTIMER_MAX_IDs] = { 0 };		// стопарим все таймеры и
+	GTDelay[GTIMER_MAX_IDs] = { 0 };		// обнуляем все задержки
 }
 
 

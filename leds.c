@@ -11,8 +11,8 @@
 
 void LEDs_Init() {
 	
-	SetBit(SysLED_DDR, SysLED);	// линию SysLED настроить как вывод
-	SysLED_Off();				// SysLED вЫключить
+	SET_BIT(SYS_LED_DDR, SYS_LED);	// линию SysLED настроить как вывод
+	SYS_LED_OFF();					// SysLED вЫключить
 	return;
 }
 
@@ -34,13 +34,13 @@ static u08 state = 0;
 	switch(state) 	{
 	
 		case 0:
-			SysLED_On();			// ВКЛючаем SysLED
+			SYS_LED_ON();			// ВКЛючаем SysLED
 			GTimer_Start(GTIMER_SYS_LED,SYS_LED_DURATION_ON);	// запускаем таймер
 			state = 1;				// меняем состояние свича
 			return;
 
 		case 1:
-			SysLED_Off();			// ВЫКЛючаем SysLED
+			SYS_LED_OFF();			// ВЫКЛючаем SysLED
 			GTimer_Start(GTIMER_SYS_LED,SYS_LED_DURATION_OFF);	// запускаем таймер
 			state = 0;				// меняем состояние свича
 			return;

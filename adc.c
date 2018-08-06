@@ -2,15 +2,15 @@
 #include "adc.h" 
    
 
-const u08 ADC_Port[u08 ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
+const u08 ADC_Port[ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
 
-volatile u08 ADC_State = u08 LapTime;		// состояние и вход АЦП
+volatile u08 ADC_State = LapTime;		// состояние и вход АЦП
 
-volatile u08 ADC_Value[u08 ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по каждому
+volatile u08 ADC_Value[ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по каждому
 									// входу отдельно; у нас пока только один вход "Время"/LapTime;
 									// при инициализации LapTime ставится в максимум
 
-static u16 K_ancillary[u08 ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
+static u16 K_ancillary[ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
 										// усреднения" для ADC_Average_Filter_...
 
 volatile u08 ADC_Latch = 0;		// защёлка обновления значений АЦП - разрешает
@@ -74,7 +74,7 @@ void ADC_Init() {
 
 void ADC_Average_Filter_Init() {
 
-	K_ancillary[u08 LapTime] = u08MAX << (u08 ADC_K_EXPONENT);
+	K_ancillary[LapTime] = u08MAX << (u08 ADC_K_EXPONENT);
 
 }
 
@@ -160,7 +160,7 @@ void ADC_Controller() {
 // если таймер периода опроса АЦП истёк
 	else if (GTimer_Exp(GTIMER_ADC)) {
 
-		GTimer_Start(u08 GTIMER_ADC,u08 ADC_POLLING_PERIOD);	// рестартуем таймер АЦП
+		GTimer_Start(GTIMER_ADC,ADC_POLLING_PERIOD);	// рестартуем таймер АЦП
 
 		switch (ADC_State)	{
 			case LapTime:	{

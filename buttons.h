@@ -16,7 +16,7 @@
 #define BUTTON_POLLING_THRESHOLD	5	// количество опросов кнопки до "срабатывания"
 
 
-extern static u08 pressedKey = 0;
+extern static u08 pressedKey;
 
 
 /******************************************************************************************

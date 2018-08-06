@@ -51,8 +51,8 @@ typedef int64_t		s64;
 static volatile u08 SaveRegister;
 
 #define ENABLE_INTERRUPT()	sei()
-#define DISABLE_INTERRUPT()	(do { SaveRegister = SREG; cli(); } while(0))
-#define RESTORE_INTERRUPT()	(do { SREG = SaveRegister; sei(); } while(0))	//использовать
+#define DISABLE_INTERRUPT()	do { SaveRegister = SREG; cli(); } while(0)
+#define RESTORE_INTERRUPT()	do { SREG = SaveRegister; sei(); } while(0)	//использовать
 																			//RESTORE только
 																			//после DISABLE
 

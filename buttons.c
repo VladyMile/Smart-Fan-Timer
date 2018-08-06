@@ -33,7 +33,7 @@ void BUTTONS_Init() {
 ****************************************************************************/
 void BUTTONS_Debrief() {
 
-GTimer_Start(u08 GTIMER_BUTTONS,u08 BUTTON_POLLING_PERIOD); // запускаем таймер
+GTimer_Start(GTIMER_BUTTONS, BUTTON_POLLING_PERIOD); // запускаем таймер
 
 static u08 comp = 0;
 
