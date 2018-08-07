@@ -1,5 +1,5 @@
 DEVICE  = atmega328p
-F_CPU   = 8000000	# edit this line for crystal speed, in Hz
+F_CPU   = 8000000 # Частота CPU в Гц
 
 OBJECTS = adc.o buttons.o gtimer.o leds.o main.o
 
@@ -30,7 +30,7 @@ main.elf: $(OBJECTS)
 main.hex: main.elf
 	rm -f main.hex main.eep.hex
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
-	avr-size main.hex
+	avr-size -C --mcu=$(DEVICE) main.elf
 
 # debugging targets:
 
