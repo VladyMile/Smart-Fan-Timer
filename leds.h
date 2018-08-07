@@ -16,8 +16,8 @@
 #define SYS_LED_DDR		DDRB
 #define SYS_LED_PORT	PORTB
 #define SYS_LED			0
-#define SYS_LED_ON()	( do { CLEAR_BIT(SYS_LED_PORT,SYS_LED); } while (0))
-#define SYS_LED_OFF()	( do { SET_BIT(SYS_LED_PORT,SYS_LED); } while (0))
+#define SYS_LED_ON()	CLEAR_BIT(SYS_LED_PORT,SYS_LED)
+#define SYS_LED_OFF()	SET_BIT(SYS_LED_PORT,SYS_LED)
 
 	
 /******************************************************************************************

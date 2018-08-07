@@ -49,27 +49,27 @@ extern volatile u08 ADC_State;			// дефолтное состояние и в�
 									
 #define ADC_TIME_CONSTANT_OF_LPF	1	// постоянная времени БИХ-фильтра, в секундах;
 
-#define ADC_SAMPLING_FREQUENCY	(1000/ADC_POLLING_PERIOD/ADC_INPUTS) // частота дискретизации АЦП
+#define ADC_SAMPLING_FREQUENCY	1000/ADC_POLLING_PERIOD/ADC_INPUTS // частота дискретизации АЦП
 
-#define ADC_K_OF_LPF	(ADC_SAMPLING_FREQUENCY*ADC_TIME_CONSTANT_OF_LPF) // коэффициент  БИХ-фильтра
+#define ADC_K_OF_LPF	ADC_SAMPLING_FREQUENCY*ADC_TIME_CONSTANT_OF_LPF // коэффициент  БИХ-фильтра
 
 
-#if (u08)ADC_K_OF_LPF < 3 
-	#define ADC_K_EXPONENT  1	// приблизительный показатель степени по основанию 2 коэффициента
-#elif (u08)ADC_K_OF_LPF < 5		// "К"  БИХ-ФНЧ для того, чтобы деление заменить сдвигом
-	#define ADC_K_EXPONENT  2
-#elif (u08)ADC_K_OF_LPF < 9
-	#define ADC_K_EXPONENT  3
-#elif (u08)ADC_K_OF_LPF < 17
-	#define ADC_K_EXPONENT  4
-#elif (u08)ADC_K_OF_LPF < 33
-	#define ADC_K_EXPONENT  5
-#elif (u08)ADC_K_OF_LPF < 65
-	#define ADC_K_EXPONENT  6
-#elif (u08)ADC_K_OF_LPF < 129
-	#define ADC_K_EXPONENT  7
+#if ADC_K_OF_LPF < 3
+#define ADC_K_EXPONENT  1	// приблизительный показатель степени по основанию 2 коэффициента
+#elif ADC_K_OF_LPF < 5		// "К"  БИХ-ФНЧ для того, чтобы деление заменить сдвигом
+#define ADC_K_EXPONENT  2
+#elif ADC_K_OF_LPF < 9
+#define ADC_K_EXPONENT  3
+#elif ADC_K_OF_LPF < 17
+#define ADC_K_EXPONENT  4
+#elif ADC_K_OF_LPF < 33
+#define ADC_K_EXPONENT  5
+#elif ADC_K_OF_LPF < 65
+#define ADC_K_EXPONENT  6
+#elif ADC_K_OF_LPF < 129
+#define ADC_K_EXPONENT  7
 #else
-	#define ADC_K_EXPONENT  8
+#define ADC_K_EXPONENT  8
 #endif
 
 
@@ -77,9 +77,6 @@ extern volatile u08 ADC_Value[ADC_INPUTS];	// массив, в который А
 											// каждому входу отдельно; у нас пока только один
 											// вход "Время"/LapTime; при инициализации LapTime
 											// ставим в максимум
-
-extern static u16 K_ancillary[ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
-												// усреднения" для ADC_Average_Filter_...
 
 extern volatile u08 ADC_Latch;			// защёлка обновления значений АЦП - разрешает
 										// перемены единожды после преобразования.
@@ -92,9 +89,8 @@ extern volatile u08 ADC_Latch;			// защёлка обновления знач
 #define ADC_START()		SET_BIT(ADCSRA, ADSC)
 
 //выбор входа АЦП
-#define ADC_SET_INPUT(_input)	(do { ADMUX &= 0xF0; ADMUX |= ((_input) & 0x0F); } while(0))
+#define ADC_SET_INPUT(_input)	do { ADMUX &= 0xF0; ADMUX |= ((_input) & 0x0F); } while(0)
 
-									
 /******************************************************************************************
  * Объявления функций */
 

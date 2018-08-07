@@ -85,8 +85,9 @@ Comments:
 // #include <avr/sleep.h>
 // #include <util/atomic.h>
 
+#ifndef F_CPU
 #define F_CPU				8000000ul	// МК работает (с внутренней тактировкой) 8 МГц
-#define SYS_TICK_PERIOD		10			// период системных часов, в миллисекундах
+#endif
 
 #include "commons.h"
 #include "gtimer.h"
