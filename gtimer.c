@@ -7,7 +7,6 @@
 #define TIMER_PAUSED	2	// Таймер на паузе
 
 
- 
 volatile u08 SysTick = 0;		// Инициализация флага SysTick
 
 static volatile u64 SysTime;	// системное время
@@ -33,22 +32,11 @@ void GTimer_Init() {
 
 	SysTime = 0;						// обнуляем системное время
 
-//	for(u08 i=0; i<GTIMER_MAX_IDs; i++) {	// стартуем все (определённые в GTimerID)
-//		Start_GTimer(i, 0);				// таймеры с временем 0 (ноль) систик
-//	}
-//
+	for(u08 i=0; i<GTIMER_MAX_IDs; i++) {	// стартуем все (определённые в GTimerID)
+		GTimer_Start(i, 0);				// таймеры с временем 0 (ноль) систик
+	}
 
-// сделаем иначе, проще и быстрее
-/* неа, так нельзя. /NStorm
-	u08 GTStates[GTIMER_MAX_IDs] = { 0 };		// стопарим все таймеры и
-	u64 GTDelay[GTIMER_MAX_IDs] = { 0 };		// обнуляем все задержки
-*/
 
-// Можно так, но тоже не совсем "кошерно". Лучше в цикле пройтись как выше. Прерывания тут отключаются, т.к. memset вызывается.
-	DISABLE_INTERRUPT();
-	memset(GTStates, 0, sizeof(GTStates));
-	memset(GTDelay, 0, sizeof(GTDelay));
-	RESTORE_INTERRUPT();
 }
 
 

@@ -3,7 +3,7 @@ F_CPU   = 8000000	# edit this line for crystal speed, in Hz
 
 OBJECTS = adc.o buttons.o gtimer.o leds.o main.o
 
-CC = avr-gcc -Os -Wall -DF_CPU=$(F_CPU) -mmcu=$(DEVICE) $(CFLAGS)
+CC = avr-gcc -Os -std=c11 -Wall -DF_CPU=$(F_CPU) -mmcu=$(DEVICE) $(CFLAGS)
 
 default: main.hex
 
