@@ -1,6 +1,6 @@
 #include "commons.h"
-#include "adc.h" 
-   
+#include "adc.h"
+#include "gtimer.h"
 
 const u08 ADC_Port[ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
 
@@ -74,7 +74,7 @@ void ADC_Init() {
 
 void ADC_Average_Filter_Init() {
 
-	K_ancillary[LapTime] = u08MAX << (u08 ADC_K_EXPONENT);
+	K_ancillary[LapTime] = (u08)(u08MAX << ADC_K_EXPONENT);
 
 }
 
@@ -96,7 +96,7 @@ void ADC_Average_Filter_Update(u08 ch) {
 
 //	K_ancillary[ch] += ADC_Value[ADC_STATE] - (K_ancillary[ch] >> ADC_K_EXPONENT);	// нечитабельно, лучше развернуть
 
-	K_ancillary[ch] = K_ancillary[ch] + ADC_Value[ADC_State] - (K_ancillary[ch] >> (u08 ADC_K_EXPONENT));
+	K_ancillary[ch] = K_ancillary[ch] + ADC_Value[ADC_State] - (u08)(K_ancillary[ch] >> ADC_K_EXPONENT);
 
 }
 
@@ -115,7 +115,7 @@ void ADC_Average_Filter_Update(u08 ch) {
 
 u08 ADC_Average_Filter_Result(u08 ch) {
 
-	return K_ancillary[ch] >> (u08 ADC_K_EXPONENT);
+	return (u08)(K_ancillary[ch] >> ADC_K_EXPONENT);
 
 }
 
@@ -164,8 +164,8 @@ void ADC_Controller() {
 
 		switch (ADC_State)	{
 			case LapTime:	{
-				ADC_SetInput(ADC_Port[ADC_State]);	// подключаем вход АЦП к соответствующей ноге и
-				ADC_Start();						// запускаем однократное преобразование АЦП
+				ADC_SET_INPUT(ADC_Port[ADC_State]);	// подключаем вход АЦП к соответствующей ноге и
+				ADC_START();						// запускаем однократное преобразование АЦП
 				break;								// и выходим
 			}
 			default:		{						// если мы как-то случайно тут оказались,

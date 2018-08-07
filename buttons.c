@@ -1,5 +1,6 @@
 #include "buttons.h"
 #include "commons.h"
+#include "gtimer.h"
 
 
 static u08 pressedKey = 0;
