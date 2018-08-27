@@ -52,9 +52,9 @@ static volatile u08 SaveRegister;
 
 #define ENABLE_INTERRUPT()	sei()
 #define DISABLE_INTERRUPT()	do { SaveRegister = SREG; cli(); } while(0)
-#define RESTORE_INTERRUPT()	do { SREG = SaveRegister; sei(); } while(0)	//использовать
-																			//RESTORE только
-																			//после DISABLE
+#define RESTORE_INTERRUPT()	do { SREG = SaveRegister; sei(); } while(0)	// использовать
+																		// RESTORE только
+																		// после DISABLE
 
 #define WATCHDOG_RESET()	wdt_reset()		// пинок собаке
    
@@ -76,14 +76,14 @@ static volatile u08 SaveRegister;
 #define TRUE	1
 #define FALSE	0
 
-#define HIGH	1
-#define LOW		0
+#define HIGH	TRUE
+#define LOW		FALSE
 
-#define ON		1
-#define OFF		0
+#define ON		TRUE
+#define OFF		FALSE
 
-#define YES		1
-#define NO		0
+#define YES		TRUE
+#define NO		FALSE
 
 
 /*--------------------------------------------------------------------------*/
