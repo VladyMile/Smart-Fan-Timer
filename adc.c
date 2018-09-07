@@ -31,7 +31,7 @@ volatile u08 ADC_Latch = 0;		// защёлка обновления значен
 void ADC_Init() {
 	
 	SET_BIT(ADCSRA, ADEN);		//включаем АЦП
-	CLEAR_BIT(ADCSRA, ADSC);		//старт преобразования пока не включаем
+	CLEAR_BIT(ADCSRA, ADSC);	//старт преобразования пока не включаем
 	CLEAR_BIT(ADCSRA, ADATE);	//отключаем постоянное преобразование
 	SET_BIT(ADCSRA, ADIF);		//снимаем флаг прерывания
 	SET_BIT(ADCSRA, ADIE);		//разрешаем прерывания
@@ -41,7 +41,7 @@ void ADC_Init() {
 	CLEAR_BIT(ADCSRA, ADPS1);
 	SET_BIT(ADCSRA, ADPS0);
 
-	CLEAR_BIT(ADMUX, REFS1);		//Источник Опорного Напряжения выставляем как
+	CLEAR_BIT(ADMUX, REFS1);	//Источник Опорного Напряжения выставляем как
 	SET_BIT(ADMUX, REFS0);		//"AVcc с внешним конденсатором на ножке AREF"
 
 	SET_BIT(ADMUX, ADLAR);		//выравниваем результат преобразования по левому краю
@@ -94,7 +94,7 @@ void ADC_Average_Filter_Init() {
 
 void ADC_Average_Filter_Update(u08 ch) {
 
-//	K_ancillary[ch] += ADC_Value[ADC_STATE] - (K_ancillary[ch] >> ADC_K_EXPONENT);	// нечитабельно, лучше развернуть
+//	K_ancillary[ch] += ADC_Value[ADC_State] - (u08)(K_ancillary[ch] >> ADC_K_EXPONENT);	// нечитабельно, лучше развернуть
 
 	K_ancillary[ch] = K_ancillary[ch] + ADC_Value[ADC_State] - (u08)(K_ancillary[ch] >> ADC_K_EXPONENT);
 
