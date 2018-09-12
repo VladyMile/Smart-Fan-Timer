@@ -86,7 +86,7 @@ Comments:
 // #include <util/atomic.h>
 
 #ifndef F_CPU
-#define F_CPU				8000000ul	// МК работает (с внутренней тактировкой) 8 МГц
+#define F_CPU	8000000ul	// МК работает с внутренней тактировкой 8 МГц
 #endif
 
 #include "commons.h"

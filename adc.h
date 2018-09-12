@@ -40,7 +40,7 @@ extern const u08 ADC_Port[ADC_INPUTS];	// порты входов АЦП (дви
 // должны идти без пропусков от 0 до 8
 #define LAP_TIME		0	// опрос движка потенциометра "Время" (установка времени RUN)
 
-// extern volatile u08 lap_time;			// значение времени RUN
+
 
 extern volatile u08 ADC_State;			// дефолтное состояние и вход АЦП
 

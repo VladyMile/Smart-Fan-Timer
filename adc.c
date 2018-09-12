@@ -4,13 +4,10 @@
 
 const u08 ADC_Port[ADC_INPUTS] = { 7 };	// порты входов АЦП (движок потенциометра "Время" на ADC7)
 
-volatile u08 ADC_State = LAP_TIME;	// состояние и вход АЦП
-
-// volatile u08 lap_time;				// значение периода времени RUN (минуты)
+volatile u08 ADC_State = LAP_TIME;	// состояние и вход АЦП; инициируем в состоянии LAP_TIME
 
 volatile u08 ADC_Value[ADC_INPUTS];	// массив, в который АЦП сбрасывает результат по каждому
 									// входу отдельно; у нас пока только один вход "Время"/LAP_TIME;
-									// при инициализации lap_time ставится в максимум
 
 static u16 K_ancillary[ADC_INPUTS];	// вспомогательный массив, хранящий "коэффициенты
 									// усреднения" для ADC_Average_Filter_...
