@@ -33,9 +33,9 @@ void EXECUTIVE_Init() {
 
 void EXECUTIVE() {
 
-u08 key = BUTTONS_Get_Key();	// получаем из буфера код нажатой кнопки
+u08 key = BUTTONS_Get_Key();		// получаем из буфера код нажатой кнопки
 
-	if (GTimer_Exp(GTIMER_RUN)) {	// если таймер RUN истёк
+	if (GTimer_Exp(GTIMER_RUN)) {	// если таймер GTIMER_RUN истёк
 	
 		FAN_1_OFF();				// FAN_1 вЫключить
 		FAN_2_OFF();				// FAN_2 вЫключить
@@ -48,16 +48,52 @@ u08 key = BUTTONS_Get_Key();	// получаем из буфера код наж
 			// стартуем на установленное "Время" таймер LAP_TIME
 			GTimer_Start(LAP_TIME,lap_time);
 
-			FAN_1_ON();	// FAN_1 включаем
-			FAN_2_ON();	// FAN_2 включаем
+			FAN_1_ON();				// FAN_1 включаем
+			FAN_2_ON();				// FAN_2 включаем
 			
 		}
 	}
 	
-	else {
+	else {							// если таймер GTIMER_RUN ещё не истёк и
+									// нажата какая-то кнопка, то
 		
-		switch (key)
+		switch (key) {
+			
+			case KEY_NULL:	{		// никакая кнопка не нажата - ничего не делаем
+			
+				break;
+			}
+			case KEY_RUN:	{		// при работающем таймере GTIMER_RUN каждое нажатие
+									// кнопки RUN рестартует GTIMER_RUN на новое время,
+									// установленное потенциометром "Время"
+				
+				// получаем новое установленное "Время" работы вентиляторов
+				u08 lap_time = ADC_Average_Filter_Result(LAP_TIME);
 
+				// принудительно останавливаем таймер LAP_TIME
+				GTimer_Stop(LAP_TIME);
+
+				// стартуем на новое установленное "Время" таймер LAP_TIME
+				GTimer_Start(LAP_TIME,lap_time);
+
+				break;
+			}
+			case KEY_STOP:	{		// если нажата кнопка STOP, то достаточно указать,
+									// что таймер "истёк". Остальное сделает стандартная
+									// процедура "остановки по истечению времени".
+
+				// принудительно останавливаем таймер LAP_TIME
+				GTimer_Stop(LAP_TIME);
+
+				break;
+			}
+			case KEY_SELECTOR:	{
+			
+				break;
+			}
+			default:	{
+			}
+		}
 	}
 	return;
 }
