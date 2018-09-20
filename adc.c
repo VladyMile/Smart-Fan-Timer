@@ -33,7 +33,7 @@ void ADC_Init() {
 	CLEAR_BIT(ADCSRA, ADSC);	//старт преобразования пока не включаем
 	CLEAR_BIT(ADCSRA, ADATE);	//отключаем постоянное преобразование
 	SET_BIT(ADCSRA, ADIF);		//снимаем флаг прерывания
-	SET_BIT(ADCSRA, ADIE);		//разрешаем прерывания
+	SET_BIT(ADCSRA, ADIE);		//разрешаем управление прерываниями ADC_vect
 
 	//делитель частоты "на 32" для тактирования АЦП на (F_CPU/32) 250кГц
 	SET_BIT(ADCSRA, ADPS2);
@@ -47,9 +47,13 @@ void ADC_Init() {
 	
 	ADCSRB = 0;					//мы мудрые - мы чистим этот регистр на всякий случай
 	
-	DIDR0 = 0;					//оставляем все входы ADC только как цифровые (Note that ADC pins
-								//ADC6 and ADC7 do not have digital input buffers, and therefore
-								//do not require Digital Input Disable bits) 
+	DIDR0 = 0;					//оставляем входы ADC0...5 только как цифровые, потому что
+								//для потенциометра "Время" используется вход ADC7
+								//(Note that ADC pins ADC6 and ADC7 do not have digital
+								//input buffers, and therefore do not require Digital
+								//Input Disable bits)
+								//Но когда мы будем делать контроль потребляемого тока
+								//с шунтов вентиляторов, НЕ ЗАБЫТЬ ПРО ЭТОТ РЕГИСТР!!!
 	
 		// КАНАЛ ПРЕОБРАЗОВАНИЯ ЗДЕСЬ НЕ УКАЗЫВАЕМ
 		// ПРЕОБРАЗОВАНИЕ АЦП НЕ ЗАПУСКАЕМ
