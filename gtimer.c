@@ -19,14 +19,40 @@ static volatile u32 GTDelay[GTIMER_MAX_IDs];	// массив задержек д
 												// все инициализируются как "истёкшие"
 
 
-
-//-----------------------------------------
-//	Function name :	GTimer_Init()
+/**************************************************************************
+//	Function name :	TIMER2_systime_Init
 //	Returns :		нет
-//	Parameters :	GTIMER_MAX_IDs - Количество используемых таймеров (максимум 255)
-//					(определяется в gtimer.h)
-//	Purpose :		Нулевая инициализация всех рабочих таймеров
-//-----------------------------------------
+//	Parameters :	нет
+//	Purpose :		TIM2 - системные часы
+****************************************************************************/
+
+void TIMER2_SysTime_Init() {
+	
+	DISABLE_INTERRUPT();
+
+	//ставим режим работы - прерывание по переполнению
+	CLEAR_BIT(TIMSK2, OCIE2A);
+	CLEAR_BIT(TIMSK2, OCIE2B);
+	SET_BIT(TIMSK2, TOIE2);
+	
+	//ставим предделитель таймера "1024"
+	CLEAR_BIT(TCCR2B, FOC2A);
+	CLEAR_BIT(TCCR2B, FOC2B);
+	CLEAR_BIT(TCCR2B, WGM22);
+	SET_BIT(TCCR2B, CS22);
+	SET_BIT(TCCR2B, CS21);
+	SET_BIT(TCCR2B, CS20);
+	return;
+}
+
+
+/**************************************************************************
+*	Function name :	GTimer_Init()
+*	Returns :		нет
+*	Parameters :	GTIMER_MAX_IDs - Количество используемых таймеров (максимум 255)
+*					(определяется в gtimer.h)
+*	Purpose :		Нулевая инициализация всех рабочих таймеров
+***************************************************************************/
 
 void GTimer_Init() {
 
@@ -41,12 +67,12 @@ void GTimer_Init() {
 
 
 
-//-----------------------------------------
-//	Function name :	SysTime_Handler()
-//	Returns :		нет
-//	Parameters :	нет
-//	Purpose :		Обработчик системного времени
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	SysTime_Handler()
+*	Returns :		нет
+*	Parameters :	нет
+*	Purpose :		Обработчик системного времени
+***************************************************************************/
 
 void SysTime_Handler() {
 	SysTick = 0;			// опускаем флаг систика
@@ -66,13 +92,13 @@ void SysTime_Handler() {
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Start(u08 GTimerID,u32 delay)
-//	Returns :		нет
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//					u32 delay - устанавливаемое время отсчёта таймера в миллисекундах
-//	Purpose :		Запуск указанного таймера на указанную длительность
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Start(u08 GTimerID,u32 delay)
+*	Returns :		нет
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*					u32 delay - устанавливаемое время отсчёта таймера в миллисекундах
+*	Purpose :		Запуск указанного таймера на указанную длительность
+***************************************************************************/
 
 void GTimer_Start(u08 GTimerID,u32 delay) {
 	GTStates[GTimerID] = TIMER_RUNNING;
@@ -82,13 +108,13 @@ void GTimer_Start(u08 GTimerID,u32 delay) {
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Stop(u08 GTimerID)
-//	Returns :		нет
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//	Purpose :		Принудительная остановка указанного таймера с обнулением длительности;
-//					По смыслу - принудительное "истечение времени" таймера
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Stop(u08 GTimerID)
+*	Returns :		нет
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*	Purpose :		Принудительная остановка указанного таймера с обнулением длительности;
+*					По смыслу - принудительное "истечение времени" таймера
+***************************************************************************/
 
 void GTimer_Stop(u08 GTimerID)	{				
 	GTStates[GTimerID] = TIMER_STOPPED;
@@ -96,12 +122,12 @@ void GTimer_Stop(u08 GTimerID)	{
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Exp(u08 GTimerID)
-//	Returns :		YES (таймер истёк) или NO (таймер ещё не истёк)
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//	Purpose :		Проверка истечения бегущего таймера
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Exp(u08 GTimerID)
+*	Returns :		YES (таймер истёк) или NO (таймер ещё не истёк)
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*	Purpose :		Проверка истечения бегущего таймера
+***************************************************************************/
 
 u08 GTimer_Exp(u08 GTimerID) {
 	if (GTStates[GTimerID] == TIMER_STOPPED) {
@@ -118,12 +144,12 @@ u08 GTimer_Exp(u08 GTimerID) {
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Pause(u08 GTimerID)
-//	Returns :		нет
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//	Purpose :		Пауза бегущего таймера с запоминанием остатка времени
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Pause(u08 GTimerID)
+*	Returns :		нет
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*	Purpose :		Пауза бегущего таймера с запоминанием остатка времени
+***************************************************************************/
 
 void GTimer_Pause(u08 GTimerID) {
 	if(GTStates[GTimerID] == TIMER_RUNNING) {
@@ -133,12 +159,12 @@ void GTimer_Pause(u08 GTimerID) {
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Release(u08 GTimerID)
-//	Returns :		нет
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//	Purpose :		Продолжение работы таймера по остатку времени
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Release(u08 GTimerID)
+*	Returns :		нет
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*	Purpose :		Продолжение работы таймера по остатку времени
+***************************************************************************/
 
 void GTimer_Release(u08 GTimerID)  {
 	if(GTStates[GTimerID] == TIMER_PAUSED) {
@@ -148,12 +174,12 @@ void GTimer_Release(u08 GTimerID)  {
 }
 
 
-//-----------------------------------------
-//	Function name :	GTimer_Get_Remainder(u08 GTimerID)
-//	Returns :		Остаток времени таймера
-//	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-//	Purpose :		Получение остатка времени таймера
-//-----------------------------------------
+/**************************************************************************
+*	Function name :	GTimer_Get_Remainder(u08 GTimerID)
+*	Returns :		Остаток времени таймера
+*	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
+*	Purpose :		Получение остатка времени таймера
+***************************************************************************/
 
 u32 GTimer_Get_Remainder(u08 GTimerID)	{
 	return (GTDelay[GTimerID] > SysTime ? (GTDelay[GTimerID] - SysTime) : 0);

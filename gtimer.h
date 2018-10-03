@@ -30,6 +30,7 @@ extern volatile u08 SysTick;
 /******************************************************************************************
  * Объявления функций */
 
+void TIMER2_SysTime_Init();
 void GTimer_Init();
 void SysTime_Handler();
 void GTimer_Start(u08 GTimerID,u32 delay); 
