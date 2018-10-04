@@ -27,7 +27,10 @@
 #define BYTE1(reg)		(*((uint8_t*)&(reg) + 1))
 #define BYTE2(reg)		(*((uint8_t*)&(reg) + 2))
 #define BYTE3(reg)		(*((uint8_t*)&(reg) + 3))
-
+#define BYTE4(reg)		(*((uint8_t*)&(reg) + 4))
+#define BYTE5(reg)		(*((uint8_t*)&(reg) + 5))
+#define BYTE6(reg)		(*((uint8_t*)&(reg) + 6))
+#define BYTE7(reg)		(*((uint8_t*)&(reg) + 7))
 
 /******************************************************************************************
 * Переопределения типов */
@@ -100,14 +103,14 @@ static volatile u08 SaveRegister;
 #define TRUE	1
 #define FALSE	0
 
-#define HIGH	TRUE
-#define LOW		FALSE
+#define HIGH	1
+#define LOW		0
 
-#define ON		TRUE
-#define OFF		FALSE
+#define ON		1
+#define OFF		0
 
-#define YES		TRUE
-#define NO		FALSE
+#define YES		1
+#define NO		0
 
 
 /*****************************************************************************************/

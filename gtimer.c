@@ -7,9 +7,12 @@
 #define TIMER_PAUSED	2	// Таймер на паузе
 
 
-volatile u08 SysTick = 0;		// Инициализация флага SysTick
+volatile u08 SysTick = 0;			// Инициализация флага SysTick
 
-static volatile u32 SysTime;	// системное время
+static volatile u32 SysTime;		// системное время
+
+#define SYS_TIME_MAXIMUM	u32MAX	// размер должен соответствовать разрядности
+									// вышеуказанной переменной SysTime
 
 static volatile u08 GTStates[GTIMER_MAX_IDs];	// текущие состояния каждого таймера (все
 												// инициализируются как TIMER_STOPPED)
@@ -20,10 +23,10 @@ static volatile u32 GTDelay[GTIMER_MAX_IDs];	// массив задержек д
 
 
 /**************************************************************************
-//	Function name :	TIMER2_systime_Init
-//	Returns :		нет
-//	Parameters :	нет
-//	Purpose :		TIM2 - системные часы
+*	Function name :	TIMER2_systime_Init
+*	Returns :		нет
+*	Parameters :	нет
+*	Purpose :		TIM2 - системные часы
 ****************************************************************************/
 
 void TIMER2_SysTime_Init() {
@@ -83,7 +86,7 @@ void SysTime_Handler() {
 		
 	// если устройство не RUN (не в работе), а системное время SysTime превысило
 	// половину размера своей переменной,
-	if ((GTStates[GTIMER_RUN] == TIMER_STOPPED) && ((u32MAX/2) < SysTime)) {
+	if ((GTStates[GTIMER_RUN] == TIMER_STOPPED) && ((SYS_TIME_MAXIMUM/2) < SysTime)) {
 		DISABLE_INTERRUPT();
 		GTimer_Init();		// то обнуляем системное время и
 							// реинициализируем все рабочие таймеры
@@ -112,8 +115,8 @@ void GTimer_Start(u08 GTimerID,u32 delay) {
 *	Function name :	GTimer_Stop(u08 GTimerID)
 *	Returns :		нет
 *	Parameters :	u08 GTimerID - идентификатор таймера (определяется в maintimer.h)
-*	Purpose :		Принудительная остановка указанного таймера с обнулением длительности;
-*					По смыслу - принудительное "истечение времени" таймера
+*	Purpose :		По смыслу - принудительное "таймер истёк".
+*					Принудительная остановка указанного таймера с обнулением длительности.
 ***************************************************************************/
 
 void GTimer_Stop(u08 GTimerID)	{				

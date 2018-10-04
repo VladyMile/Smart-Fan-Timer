@@ -26,7 +26,7 @@
  * Объявления функций */
 
 void EXECUTIVE_Init();
-void EXECUTIVE();
+void Executive();
 
 
 
