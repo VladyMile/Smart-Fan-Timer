@@ -9,7 +9,7 @@
 
 volatile u08 SysTick = 0;			// Инициализация флага SysTick
 
-static volatile u32 SysTime;		// системное время
+static volatile u32 SysTime = 0;	// системное время
 
 #define SYS_TIME_MAXIMUM	u32MAX	// размер должен соответствовать разрядности
 									// вышеуказанной переменной SysTime
