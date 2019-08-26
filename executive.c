@@ -20,7 +20,6 @@ void EXECUTIVE_Init() {
 	SET_BIT(FAN_2_DDR,FAN_2);		// линию FAN_2 настроить как вывод
 	FAN_2_OFF();					// FAN_2 вЫключить
 
-	return;
 }
 
 
@@ -137,7 +136,6 @@ static u08 selector_state = 0;		// переменная конечного ав�
 				break;
 		}
 	}
-	return;
 }
 
 
