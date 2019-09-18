@@ -104,10 +104,10 @@ void SysTime_Handler() {
 ***************************************************************************/
 
 void GTimer_Start(u08 GTimerID,u32 delay) {
-	GTStates[GTimerID] = TIMER_RUNNING;
 	DISABLE_INTERRUPT();
 		GTDelay[GTimerID] = (delay/SYS_TICK_PERIOD) + SysTime;
 	RESTORE_INTERRUPT();
+	GTStates[GTimerID] = TIMER_RUNNING;
 }
 
 
@@ -171,8 +171,8 @@ void GTimer_Pause(u08 GTimerID) {
 
 void GTimer_Release(u08 GTimerID)  {
 	if(GTStates[GTimerID] == TIMER_PAUSED) {
-		GTStates[GTimerID] = TIMER_RUNNING;
 		GTDelay[GTimerID] = GTDelay[GTimerID] + SysTime;
+		GTStates[GTimerID] = TIMER_RUNNING;
 	}
 }
 
@@ -188,10 +188,9 @@ u32 GTimer_Get_Remainder(u08 GTimerID)	{
 	return ((GTDelay[GTimerID] - 2) > SysTime ? (GTDelay[GTimerID] - SysTime) : 0);
 	// здесь используется (GTDelay[GTimerID] - 2), чтобы в какой-то момент времени 
 	// разность u32 (GTDelay[GTimerID] - SysTime) не стала отрицательной.
-	// Камень - 8-разрядный AVR, все участвующие переменные - u32, обрабатываемые за
-	// несколько тактов каждая операция.
+	// Камень - 8-разрядный AVR, все участвующие переменные - u32.
 	// Поскольку операции с u32 занимают много тактов, да ещё и прерываний в устройстве
-	// будет много, то разность (GTDelay[GTimerID] - SysTime) имеет вероятность
+	// планирую много, то разность (GTDelay[GTimerID] - SysTime) имеет вероятность
 	// в какой-то момент оказаться отрицательной. И что при этом вылезет - ...
 	// Можно, конечно, на время вычислений запретить прерывания, но это как-то
 	// не по-людски. Прерываний и так много задумано, чтобы их ещё и душить.
